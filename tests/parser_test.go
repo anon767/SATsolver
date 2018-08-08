@@ -2,7 +2,6 @@ package tests
 
 import (
 	"../parser"
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -17,7 +16,7 @@ func TestParser(t *testing.T) {
 	assert.Equal(t, solvedTerm, parsedDomain.Solve())
 }
 func TestSudoku(t *testing.T) {
-	p := parser.Parser{FilePath: "./sudoku.cnf"}
-	parsedDomain := p.ParseFile()
-	fmt.Println(parsedDomain.Solve())
+	//p := parser.Parser{FilePath: "./sudoku.cnf"}
+	//parsedDomain := p.ParseFile()
+	//fmt.Println(parsedDomain.Solve())
 }
