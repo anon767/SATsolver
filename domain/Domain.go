@@ -5,8 +5,10 @@ import (
 	"math/rand"
 )
 
+const Max_Iterations = 2250
+
 type Domain struct {
-	terms [] Term
+	terms []Term
 }
 
 func NewDomain(terms []Term) Domain {
@@ -28,24 +30,29 @@ func (domain Domain) PermutateParallel() []Term {
 	for _, term := range domain.terms {
 		go func(term Term) {
 			var array []Term
-			array = append(array, term.GetGoodPermutations()[0])
+			if len(term.GetGoodPermutations()) > 0 {
+				array = append(array, term.GetGoodPermutations()[0])
+			}
 			out <- array
 		}(term)
 	}
 	for i := 0; i < len(domain.terms); i++ {
-		termsArray = append(termsArray, (<-out)[0])
+		var tempTerm []Term = <-out
+		if len(tempTerm) > 0 {
+			termsArray = append(termsArray, tempTerm[0])
+		}
 	}
 	return termsArray
 }
 
-func evaluateTerms(terms []Term) bool {
+func EvaluateTerms(terms []Term) bool {
 	result := true
 	for _, term := range terms {
 		result = result && term.EvaluateTerm()
 	}
 	return result
 }
-func (domain Domain) solve(keys map[string]int8) map[string]int8 {
+func (domain Domain) solve(keys map[string]int8, iteration uint) map[string]int8 {
 	initiatedTerms := domain.PermutateParallel()
 	for _, term := range initiatedTerms {
 		for index, _ := range term.literals {
@@ -54,20 +61,26 @@ func (domain Domain) solve(keys map[string]int8) map[string]int8 {
 			} else {
 				keys[term.literals[index].Name] = term.literals[index].evaluated
 			}
-
+			//fixed given evaluations should be fixed
+			if !term.literals[index].IsVariable() {
+				keys[term.literals[index].Name] = term.literals[index].evaluated
+			}
 		}
 	}
-	if !evaluateTerms(initiatedTerms) {
+	if iteration >= uint(Max_Iterations) {
+		return make(map[string]int8)
+	}
+	if !EvaluateTerms(initiatedTerms) {
 		fmt.Println("first try failed")
 		for key, _ := range keys {
-			if (rand.Intn(10) > 5) {
+			if rand.Intn(10) > 5 {
 				keys[key] = -keys[key]
-				return domain.solve(keys)
+				return domain.solve(keys, iteration+1)
 			}
 		}
 	}
 	return keys
 }
 func (domain Domain) Solve() map[string]int8 {
-	return domain.solve(make(map[string]int8))
+	return domain.solve(make(map[string]int8), 0)
 }

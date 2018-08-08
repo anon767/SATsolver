@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"testing"
+	"../domain"
 	"github.com/stretchr/testify/assert"
-	"satsolver/domain"
+	"testing"
 )
 
 func TestTermTruthy(t *testing.T) {
