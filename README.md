@@ -6,8 +6,8 @@ A naive SAT Solver written in Go
 
 Given following CNF
 ```
-A:0 B:0 C:0
--B:0 -C:0
+A B C
+-B -C
 ```
 You can parse it like:
 
