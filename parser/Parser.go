@@ -25,19 +25,12 @@ func (parser Parser) ParseFile() domain.Domain {
 		wordsPerLine := strings.Split(line, " ")
 		var literals []domain.Literal
 		for _, word := range wordsPerLine {
-			seperator := strings.Split(word, ":")
-			modifier := !strings.HasPrefix(seperator[0], "-")
-			name := seperator[0]
+			modifier := !strings.HasPrefix(word, "-")
+			name := word
 			if !modifier {
-				name = strings.Replace(seperator[0], "-", "", -1)
+				name = strings.Replace(word, "-", "", -1)
 			}
-			var evaluation int8 = 0
-			if seperator[1] == "-1" {
-				evaluation = -1
-			} else if seperator[1] == "1" {
-				evaluation = 1
-			}
-			literals = append(literals, domain.NewLiteral(modifier, name, evaluation))
+			literals = append(literals, domain.NewLiteral(modifier, name, 0))
 		}
 		terms = append(terms, domain.NewTerm(literals))
 	}

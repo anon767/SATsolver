@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"fmt"
 	"math/rand"
 )
 
@@ -71,7 +70,6 @@ func (domain Domain) solve(keys map[string]int8, iteration uint) map[string]int8
 		return make(map[string]int8)
 	}
 	if !EvaluateTerms(initiatedTerms) {
-		fmt.Println("first try failed")
 		for key, _ := range keys {
 			if rand.Intn(10) > 5 {
 				keys[key] = -keys[key]
